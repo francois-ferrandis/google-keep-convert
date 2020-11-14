@@ -2,6 +2,7 @@
 
 require "date"
 require_relative "note_file"
+require_relative "../title_from_body"
 
 module Nextcloud
   # Convert from Keep to Nextcloud notes
@@ -17,38 +18,20 @@ module Nextcloud
     end
 
     def filename
-      filename = title || body.lines(chomp: true).first || Time.now.to_s
-      filename = filename.gsub(%r{[#°<>:;"/\\|?*]}, "")[0, 60]
-      raise @keep_note.attributes if filename.to_s.strip.empty?
+      title_from_body = TitleFromBody.new(
+        body: @keep_note.markdown_body,
+        created_at: @keep_note.last_edited_at,
+      ).short_title_from_body
+      filename = @keep_note.title || title_from_body || Time.now.to_s
+      filename = filename.gsub(%r{[#°<>:;"/\\|?*]}, "")[0, 60].strip
+      raise "Can't compute file name for #{@keep_note.raw_attributes}" if filename.blank?
 
       filename += ".txt"
       filename
     end
 
     def content
-      if title
-        "# #{title}\n\n#{body}"
-      else
-        body
-      end
-    end
-
-    def title
-      if @keep_note.title
-        @keep_note.title
-      elsif @keep_note.list_items&.any?
-        "List from #{Date.parse(@keep_note.last_edited_at.to_s)}"
-      end
-    end
-
-    def body
-      if @keep_note.list_items&.any?
-        @keep_note.list_items.map(&:to_s).join("\n")
-      elsif @keep_note.text_content
-        @keep_note.text_content
-      else
-        ""
-      end
+      @keep_note.body
     end
   end
 end

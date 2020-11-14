@@ -7,7 +7,7 @@ require "getoptlong"
 
 opts = GetoptLong.new(
   ["--input-dir", "-i", GetoptLong::REQUIRED_ARGUMENT],
-  ["--output-dir", "-o", GetoptLong::REQUIRED_ARGUMENT]
+  ["--output-dir", "-o", GetoptLong::REQUIRED_ARGUMENT],
 )
 
 input_dir = nil
@@ -33,8 +33,6 @@ keep_notes.each do |keep_note|
              "pinned"
            elsif keep_note.trashed?
              "trashed"
-           elsif keep_note.color == "PINK"
-             "lol"
            end
   current_output_dir = output_dir
   current_output_dir = File.join(current_output_dir, subdir) if subdir

@@ -20,7 +20,7 @@ module GoogleKeep
       @item_hash["isChecked"] == true
     end
 
-    def to_s
+    def to_markdown
       checkbox = checked? ? "[x] " : "[ ]"
       "- #{checkbox} #{text}"
     end

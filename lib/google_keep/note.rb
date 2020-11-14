@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require "active_support/core_ext/object/blank"
 require_relative "attachment"
 require_relative "list_item"
 
@@ -16,12 +17,12 @@ module GoogleKeep
 
     # @return [String, nil]
     def title
-      @raw_attributes["title"] unless @raw_attributes["title"].to_s.strip.empty?
+      @raw_attributes["title"] unless @raw_attributes["title"].blank?
     end
 
     # @return [String, nil]
     def text_content
-      @raw_attributes["textContent"] unless @raw_attributes["textContent"].to_s.strip.empty?
+      @raw_attributes["textContent"] unless @raw_attributes["textContent"].blank?
     end
 
     # @return [Array<GoogleKeep::ListItem>]
@@ -36,13 +37,15 @@ module GoogleKeep
       @raw_attributes["attachments"]
     end
 
+    def labels
+      @raw_attributes["labels"]&.map { |hash| hash[:name] }
+    end
+
     def annotations
-      raise "Unimplemented!"
       @raw_attributes["annotations"]
     end
 
     def sharees
-      raise "Unimplemented!"
       @raw_attributes["sharees"]
     end
 
@@ -57,7 +60,7 @@ module GoogleKeep
 
     # @return [String, nil]
     def color
-      @raw_attributes["color"]
+      @raw_attributes["color"] if @raw_attributes["color"]&.strip&.size&.positive?
     end
 
     # @return [Boolean, nil]
@@ -79,5 +82,14 @@ module GoogleKeep
     def inspect
       @raw_attributes.to_json
     end
+
+    def markdown_body
+      if list_items&.any?
+        list_items.map(&:to_markdown).join("\n")
+      elsif text_content
+        text_content
+      end
+    end
+    alias body markdown_body
   end
 end
