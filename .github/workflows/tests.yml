@@ -19,7 +19,7 @@ jobs:
       - name: Check code
         run: rubocop
 
-  rspec-test:
+  rspec-cucumber-test:
     name: RSpec
     needs: rubocop-test
     runs-on: ubuntu-20.04
@@ -32,5 +32,21 @@ jobs:
         run: |
           gem install bundler
           bundler install
-      - name: Run tests
+      - name: Run Rspec
         run: bundle exec rspec
+
+  cucumber-test:
+    name: Cucumber
+    needs: rubocop-test
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v1
+      - uses: actions/setup-ruby@v1
+        with:
+          ruby-version: ${{ env.RUBY_VERSION }}
+      - name: Install dependencies
+        run: |
+          gem install bundler
+          bundler install
+      - name: Run Cucumber
+        run: bundle exec cucumber
