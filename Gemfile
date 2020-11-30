@@ -16,6 +16,7 @@ gem "flexirest"
 gem "rubocop", require: false
 
 group :test do
+  gem "cucumber", require: false
   gem "rspec"
   gem "webmock"
 end

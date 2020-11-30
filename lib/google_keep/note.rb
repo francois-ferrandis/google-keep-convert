@@ -1,10 +1,17 @@
 # frozen_string_literal: true
 
+require "time"
+
 require "active_support/core_ext/object/blank"
 require_relative "attachment"
 require_relative "list_item"
 
 module GoogleKeep
+  def self.time_to_timestamp(time)
+    time = Time.parse(time) if time.is_a?(String)
+    time.to_i * 1_000_000
+  end
+
   # This data-object takes a Google Keep JSON config
   # as hash and provides helpers around it.
   class Note

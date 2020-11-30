@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require_relative "../../lib/google_keep/note"
+
 def build_keep_note(title: "My note title",
                     text_content: "My note body",
                     color: "DEFAULT",
@@ -11,7 +13,7 @@ def build_keep_note(title: "My note title",
                     labels: [])
   raise "Can't have both list content and text content" if list_content && text_content
 
-  timestamp ||= Time.now.to_i * 1_000_000 # microseconds
+  timestamp ||= GoogleKeep.time_to_timestamp(Time.now)
   labels = labels.map { |l| { name: l } } if labels.any?
 
   config = {
