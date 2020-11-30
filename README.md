@@ -1,5 +1,7 @@
 # google-keep-convert
 
+![Build status](https://github.com/francois-ferrandis/google-keep-convert/workflows/tests/badge.svg)
+
 Convert your Google Keep notes from a Google Takeout archive.
 
 ## Import Google Keep Archive within Joplin

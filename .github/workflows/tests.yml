@@ -1,0 +1,36 @@
+env:
+  RUBY_VERSION: 2.6.6
+
+name: tests
+on: [push,pull_request]
+
+jobs:
+
+  rubocop-test:
+    name: Rubocop
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v1
+      - uses: actions/setup-ruby@v1
+        with:
+          ruby-version: ${{ env.RUBY_VERSION }}
+      - name: Install Rubocop
+        run: gem install rubocop
+      - name: Check code
+        run: rubocop
+
+  rspec-test:
+    name: RSpec
+    needs: rubocop-test
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v1
+      - uses: actions/setup-ruby@v1
+        with:
+          ruby-version: ${{ env.RUBY_VERSION }}
+      - name: Install dependencies
+        run: |
+          gem install bundler
+          bundler install
+      - name: Run tests
+        run: bundle exec rspec
